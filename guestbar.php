@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Guest Bar
 Description: Adds a BuddyPress-like guest bar to your WordPress site!
-Version: 1.0
+Version: 1.1
 Author: Marco Milesi
 Author Email: milesimarco@outlook.com
 License:
@@ -29,4 +29,10 @@ function wpgb_login_adminbar( $wp_admin_bar) {
 }
 add_action( 'admin_bar_menu', 'wpgb_login_adminbar' );
 add_filter( 'show_admin_bar', '__return_true' , 1000 );
+
+add_action( 'admin_bar_menu', 'wpgb_remove_wp_logo', 999 );
+
+function wpgb_remove_wp_logo( $wp_admin_bar ) {
+	$wp_admin_bar->remove_node( 'wp-logo' );
+}
 ?>
