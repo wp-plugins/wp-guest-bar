@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Guest Bar
 Description: Adds a BuddyPress-like guest bar to your WordPress site!
-Version: 1.1
+Version: 1.1.1
 Author: Marco Milesi
 Author Email: milesimarco@outlook.com
 License:
