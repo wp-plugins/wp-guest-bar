@@ -1,30 +1,21 @@
 <?php
 /*
 Plugin Name: WP Guest Bar
-Description: Adds a BuddyPress-like guest bar to your WordPress site!
-Version: 1.1.1
+Plugin URI:   https://wordpress.org/plugins/wp-guest-bar
+Description: Adds a BuddyPress guest bar (login+register) to your WordPress site and show a message!
+Version: 1.2
 Author: Marco Milesi
-Author Email: milesimarco@outlook.com
-License:
-Copyright 2013 Marco Milesi (milesimarco@outlook.com)
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License, version 2, as 
-published by the Free Software Foundation.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+Author URI:   https://wordpress.org/plugins/wp-guest-bar
+Contributors: Milmor
 */
 
 // functions and options will be added in the future
 function wpgb_login_adminbar( $wp_admin_bar) {
 	if ( !is_user_logged_in() ) {
+        $options = get_option('wpgov_wpgb');
 		$wp_admin_bar->add_menu( array( 'title' => __( 'Log In' ), 'href' => wp_login_url() ) );
 		$wp_admin_bar->add_menu( array( 'title' => __( 'Register' ), 'href' => wp_registration_url() ) );
+        $wp_admin_bar->add_menu( array( 'title' => $options['message'] ) );
 	}
 }
 add_action( 'admin_bar_menu', 'wpgb_login_adminbar' );
@@ -34,5 +25,39 @@ add_action( 'admin_bar_menu', 'wpgb_remove_wp_logo', 999 );
 
 function wpgb_remove_wp_logo( $wp_admin_bar ) {
 	$wp_admin_bar->remove_node( 'wp-logo' );
+}
+
+function wpgb_options() {
+    register_setting( 'wpgov_wpgb_options', 'wpgov_wpgb' );
+}
+add_action( 'admin_init', 'wpgb_options');
+
+add_action('admin_menu', 'show_wpgb_options');
+function show_wpgb_options() {
+	add_options_page('WP Guest Bar', 'WP Guest Bar', 'manage_options', 'wpgov_wpgb', 'wpgov_wpgb_options');
+}
+
+function wpgov_wpgb_options() {
+    ?>
+<div class="wrap">
+    <h2>WP Guest Bar<br><small>Please remind that the bar will be shown for non-logged users only.</small></h2>
+    <form method="post" action="options.php">
+			<?php 
+    settings_fields('wpgov_wpgb_options');
+    $options = get_option('wpgov_wpgb');
+            ?>
+			<table class="form-table">
+                <tr valign="top"><th scope="row"><label for="networkshareurl">Top Bar Message</label></th>
+                    <td><input id="networkshareurl" type="text" name="wpgov_wpgb[message]" value='<?php echo $options['message']; ?>' size="80"/><br><small>You can use html. Example:<code>&lt;span style="background-color:red;color:white;padding: 5px;border-radius: 5px;"&gt;Hi User :)&lt;/span&gt;</code></small></td>
+				</tr>
+                
+			</table>
+        <p class="submit">
+			<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
+			</p>
+		</form>
+        
+</div>
+    <?php
 }
 ?>
